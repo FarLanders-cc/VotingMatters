@@ -1,0 +1,124 @@
+# VotingMatters Messages Configuration
+# Use & for color codes, %player% for player name, %votes% for vote count, etc.
+
+# Prefix for all plugin messages
+prefix: "&8[&6VotingMatters&8] "
+
+# Vote command messages
+vote:
+  header: "&6&l=== Vote for Our Server ==="
+  sites-header: "&e&lVoting Sites:"
+  site-format: "&7• &a%site% &7- &e%url%"
+  footer: "&7Thanks for supporting our server!"
+  stats: "&7Your Stats: &e%total_votes% &7total votes, &e%streak% &7day streak"
+  no-sites: "&cNo voting sites are currently configured!"
+
+# Reward messages
+rewards:
+  received: "&aThanks for voting! You received:"
+  money: "&7• &e$%amount%"
+  item: "&7• &e%amount%x %item%"
+  command: "&7• &eSpecial reward executed!"
+  streak-bonus: "&6&lStreak Bonus! &e%days% day voting streak!"
+  milestone-bonus: "&5&lMilestone Reached! &e%votes% total votes!"
+  bonus-rare: "&d&lRare Bonus! &eYou got lucky!"
+  bonus-epic: "&5&lEPIC BONUS! &dIncredible luck!"
+  weekend-bonus: "&b&lWeekend Bonus! &eExtra rewards!"
+  vip-bonus: "&6&lVIP Bonus! &ePerks of being VIP!"
+  time-bonus: "&a&lTime Bonus! &ePerfect timing!"
+
+# Vote detection messages
+detection:
+  vote-detected: "&a%player% &ehas voted on &a%site%&e!"
+  thank-you: "&aThanks for voting, %player%!"
+  broadcast: "&6%player% &evoted for the server! &7(/vote to vote too!)"
+
+# Offline vote messages
+offline:
+  claim-available: "&eYou have &a%count% &eoffline votes to claim! Use &a/vote claim"
+  claimed: "&aYou claimed &e%count% &aoffline votes!"
+  no-offline: "&cYou have no offline votes to claim."
+
+# Statistics messages
+stats:
+  header: "&6&l=== Voting Statistics ==="
+  player-stats: "&ePlayer: &a%player%"
+  total-votes: "&eTotal Votes: &a%total%"
+  current-streak: "&eCurrent Streak: &a%streak% days"
+  best-streak: "&eBest Streak: &a%best_streak% days"
+  last-vote: "&eLast Vote: &a%last_vote%"
+  next-vote: "&eNext Vote Available: &a%next_vote%"
+
+# Leaderboard messages
+leaderboard:
+  header: "&6&l=== Top Voters ==="
+  entry: "&e%position%. &a%player% &7- &e%votes% votes"
+  footer: "&7Page %page%/%max_pages% &8| &7Use &e/votetop %next_page% &7for next page"
+  no-data: "&cNo voting data available yet!"
+
+# Reminder messages
+reminders:
+  join: "&eRemember to vote for the server! Use &a/vote &efor links."
+  periodic: "&eDon't forget to vote! You can vote every 24 hours on each site."
+  streak-risk: "&cWarning: Your %streak% day voting streak will reset in %hours% hours!"
+
+# Error messages
+errors:
+  no-permission: "&cYou don't have permission to use this command!"
+  player-not-found: "&cPlayer &e%player% &cnot found!"
+  invalid-arguments: "&cInvalid arguments! Usage: %usage%"
+  command-error: "&cAn error occurred while executing the command."
+  database-error: "&cDatabase error occurred. Please contact an administrator."
+  api-error: "&cVoting site API error. Please try again later."
+  cooldown: "&cYou must wait %time% before voting on %site% again!"
+
+# Admin messages
+admin:
+  reload-success: "&aConfiguration reloaded successfully!"
+  reload-error: "&cError reloading configuration: %error%"
+  reward-added: "&aReward added successfully!"
+  reward-removed: "&aReward removed successfully!"
+  reward-list-header: "&6&l=== Configured Rewards ==="
+  reward-list-entry: "&e%id%. &a%type% &7- %details%"
+  player-votes-set: "&aSet %player%'s votes to %amount%."
+  player-streak-set: "&aSet %player%'s streak to %amount% days."
+  test-vote: "&aTesting vote for %player% on site %site%..."
+
+# Vote checking messages
+checking:
+  started: "&eChecking for new votes..."
+  completed: "&aVote check completed. Found %count% new votes."
+  failed: "&cVote check failed for site %site%: %error%"
+
+# GUI messages
+gui:
+  vote-menu-title: "&6&lVote for Rewards"
+  vote-site-lore:
+    - "&7Click to open voting site"
+    - "&7in your browser"
+    - ""
+    - "&eStatus: %status%"
+    - "&eLast Vote: %last_vote%"
+    - "&eNext Vote: %next_vote%"
+  stats-item-name: "&e&lYour Voting Stats"
+  stats-item-lore:
+    - "&7Total Votes: &e%total%"
+    - "&7Current Streak: &e%streak% days"
+    - "&7Best Streak: &e%best_streak% days"
+    - ""
+    - "&7Keep voting daily to"
+    - "&7maintain your streak!"
+  claim-item-name: "&a&lClaim Offline Votes"
+  claim-item-lore:
+    - "&7You have &e%offline_votes% &7votes"
+    - "&7waiting to be claimed!"
+    - ""
+    - "&eClick to claim rewards!"
+  no-offline-votes:
+    - "&7No offline votes to claim."
+
+# Success messages
+success:
+  general: "&aSuccess!"
+  vote-recorded: "&aVote recorded successfully!"
+  rewards-given: "&aRewards given successfully!"

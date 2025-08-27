@@ -1,0 +1,49 @@
+name: VotingMatters
+version: 1.0.0
+main: com.mjanglin.votingmatters.VotingMatters
+api-version: 1.20
+api: bukkit
+author: clxrity
+description: A comprehensive voting plugin with flexible reward systems
+website: https://github.com/clxrityy/VotingMatters
+
+commands:
+  vote:
+    description: View voting information and links
+    usage: /vote
+    aliases: [voting, votes]
+  votereward:
+    description: Manage voting rewards (admin only)
+    usage: /votereward <add|remove|list> [args...]
+    permission: votingmatters.admin
+  votecheck:
+    description: Check voting status for a player
+    usage: /votecheck [player]
+    permission: votingmatters.check
+  votestats:
+    description: View voting statistics
+    usage: /votestats [player]
+  votereload:
+    description: Reload the plugin configuration
+    usage: /votereload
+    permission: votingmatters.admin
+  votetop:
+    description: View top voters leaderboard
+    usage: /votetop [page]
+
+permissions:
+  votingmatters.admin:
+    description: Full admin access to voting plugin
+    default: op
+  votingmatters.check:
+    description: Check other players' voting status
+    default: op
+  votingmatters.vote:
+    description: Use voting commands
+    default: "not op"
+  votingmatters.notify:
+    description: Receive vote notifications
+    default: "not op"
+
+depend: [Vault]
+softdepend: [PlaceholderAPI, WorldGuard, Essentials]

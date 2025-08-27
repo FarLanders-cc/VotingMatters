@@ -1,0 +1,23 @@
+# Test configuration for VotingMatters tests
+database:
+  type: "h2"
+  url: "jdbc:h2:mem:testdb"
+  username: ""
+  password: ""
+
+voting:
+  check-interval: 300
+  auto-reward: true
+  vote-sites:
+    minecraftservers:
+      enabled: false
+      api-key: "test-key"
+      server-id: "test-server"
+    minecraft-mp:
+      enabled: false
+      api-key: "test-key"
+      server-id: "test-server"
+
+leaderboard:
+  top-players: 10
+  update-interval: 600

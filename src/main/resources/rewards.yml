@@ -1,0 +1,168 @@
+# VotingMatters Rewards Configuration
+# This file defines all the rewards players can receive for voting
+
+# Default rewards given for every vote
+default-rewards:
+  - type: "money"
+    amount: 100
+    chance: 100
+  - type: "command"
+    commands:
+      - "give %player% diamond 1"
+    chance: 100
+  - type: "item"
+    material: "GOLDEN_APPLE"
+    amount: 2
+    name: "&6Vote Reward"
+    lore:
+      - "&7Thanks for voting!"
+      - "&7Vote again in 24 hours"
+    chance: 75
+
+# Streak rewards - given based on consecutive voting days
+streak-rewards:
+  3: # 3 day streak
+    - type: "money"
+      amount: 250
+    - type: "command"
+      commands:
+        - "give %player% emerald 5"
+  7: # 7 day streak
+    - type: "money"
+      amount: 500
+    - type: "item"
+      material: "DIAMOND_SWORD"
+      enchantments:
+        - "SHARPNESS:3"
+      name: "&b&lVoter's Blade"
+      lore:
+        - "&77 Day Voting Streak Reward!"
+  14: # 14 day streak
+    - type: "money"
+      amount: 1000
+    - type: "command"
+      commands:
+        - "give %player% elytra 1"
+  30: # 30 day streak
+    - type: "money"
+      amount: 2500
+    - type: "command"
+      commands:
+        - "lp user %player% permission set votingmatters.vip true"
+        - "broadcast &6%player% &ehas reached a 30 day voting streak!"
+
+# Milestone rewards - given when player reaches total vote counts
+milestone-rewards:
+  10: # 10 total votes
+    - type: "money"
+      amount: 500
+    - type: "command"
+      commands:
+        - "give %player% diamond 10"
+  25: # 25 total votes
+    - type: "money"
+      amount: 1000
+    - type: "item"
+      material: "DIAMOND_PICKAXE"
+      enchantments:
+        - "EFFICIENCY:4"
+        - "FORTUNE:3"
+        - "UNBREAKING:3"
+      name: "&a&lVoter's Pickaxe"
+      lore:
+        - "&725 Vote Milestone Reward!"
+  50: # 50 total votes
+    - type: "money"
+      amount: 2000
+    - type: "command"
+      commands:
+        - "give %player% beacon 1"
+  100: # 100 total votes
+    - type: "money"
+      amount: 5000
+    - type: "command"
+      commands:
+        - "lp user %player% permission set votingmatters.legend true"
+        - "broadcast &6%player% &ehas reached 100 votes! What a legend!"
+
+# Site-specific rewards (optional - gives different rewards per vote site)
+site-rewards:
+  minecraftservers:
+    - type: "money"
+      amount: 150
+    - type: "item"
+      material: "EXPERIENCE_BOTTLE"
+      amount: 5
+  minecraftmp:
+    - type: "money"
+      amount: 125
+    - type: "command"
+      commands:
+        - "give %player% gold_ingot 3"
+
+# Random bonus rewards (chance-based extras)
+bonus-rewards:
+  # Rare rewards with low chance
+  rare:
+    chance: 5 # 5% chance
+    rewards:
+      - type: "money"
+        amount: 1000
+      - type: "item"
+        material: "NETHER_STAR"
+        amount: 1
+        name: "&5&lVoting Star"
+        lore:
+          - "&7A rare reward for dedicated voters!"
+
+  # Epic rewards with very low chance
+  epic:
+    chance: 1 # 1% chance
+    rewards:
+      - type: "money"
+        amount: 5000
+      - type: "command"
+        commands:
+          - "give %player% dragon_egg 1"
+          - "broadcast &5%player% &dwon an epic voting reward!"
+
+# Weekend bonus rewards (Friday-Sunday)
+weekend-bonus:
+  enabled: true
+  multiplier: 1.5 # 50% more money rewards
+  extra-rewards:
+    - type: "item"
+      material: "CAKE"
+      amount: 1
+      name: "&d&lWeekend Treat"
+
+# VIP rewards (requires permission: votingmatters.vip)
+vip-rewards:
+  - type: "money"
+    amount: 50 # Extra money on top of default
+  - type: "command"
+    commands:
+      - "give %player% diamond 1"
+
+# Time-based rewards (different rewards based on time of day)
+time-based-rewards:
+  # Morning bonus (6 AM - 12 PM)
+  morning:
+    time-start: 6
+    time-end: 12
+    rewards:
+      - type: "item"
+        material: "BREAD"
+        amount: 5
+        name: "&e&lMorning Snack"
+
+  # Night bonus (8 PM - 6 AM)
+  night:
+    time-start: 20
+    time-end: 6
+    rewards:
+      - type: "item"
+        material: "POTION"
+        potion-type: "NIGHT_VISION"
+        duration: 600 # 30 seconds * 20 ticks
+        amplifier: 0

@@ -1,0 +1,123 @@
+# VotingMatters Configuration
+# Support: https://github.com/clxrity/VotingMatters
+
+# Database settings
+database:
+  type: "sqlite" # sqlite, mysql
+  host: "localhost"
+  port: 3306
+  database: "votingmatters"
+  username: "root"
+  password: ""
+
+# Vote site configurations
+vote-sites:
+  # Example configurations for popular voting sites
+  # You'll need to get API keys from each site
+
+  minecraftservers:
+    enabled: false
+    api-key: "your-api-key-here"
+    server-id: "your-server-id"
+    url: "https://minecraftservers.org/server/YOUR_SERVER_ID"
+    check-interval: 300 # seconds
+
+  minecraftmp:
+    enabled: false
+    api-key: "your-api-key-here"
+    server-id: "your-server-id"
+    url: "https://minecraft-mp.com/server/YOUR_SERVER_ID/vote/"
+    check-interval: 300
+
+  planetminecraft:
+    enabled: false
+    api-key: "your-api-key-here"
+    server-id: "your-server-id"
+    url: "https://www.planetminecraft.com/server/your-server/vote/"
+    check-interval: 300
+
+  topminecraftservers:
+    enabled: false
+    api-key: "your-api-key-here"
+    server-id: "your-server-id"
+    url: "https://topminecraftservers.org/server/YOUR_SERVER_ID"
+    check-interval: 300
+
+# Vote checking settings
+vote-check:
+  enabled: true
+  interval: 300 # seconds between checks
+  retry-attempts: 3
+  retry-delay: 30 # seconds
+
+# Reward settings
+rewards:
+  # Give rewards immediately when vote is detected
+  instant-rewards: true
+
+  # Allow offline vote claiming
+  offline-votes: true
+
+  # Maximum offline votes to store per player
+  max-offline-votes: 50
+
+  # Vote streak settings
+  streak:
+    enabled: true
+    reset-time: 24 # hours - time before streak resets
+
+  # Milestone rewards (bonus rewards for reaching vote counts)
+  milestones:
+    enabled: true
+
+# Notification settings
+notifications:
+  # Broadcast votes to server
+  broadcast-votes: true
+
+  # Send personal vote messages
+  personal-messages: true
+
+  # Join reminders
+  join-reminders:
+    enabled: true
+    delay: 100 # ticks (5 seconds)
+
+  # Vote reminders
+  vote-reminders:
+    enabled: true
+    interval: 3600 # seconds (1 hour)
+    max-reminders: 3
+
+# GUI settings
+gui:
+  enabled: true
+  title: "&6&lVote for Rewards"
+  size: 54 # Must be multiple of 9
+
+# Leaderboard settings
+leaderboard:
+  # Number of players to show in /votetop
+  top-players: 10
+
+  # Update interval for leaderboard cache
+  update-interval: 300 # seconds
+
+# Integration settings
+integrations:
+  # PlaceholderAPI placeholders
+  placeholderapi: true
+
+  # Discord webhook for vote notifications
+  discord:
+    enabled: false
+    webhook-url: ""
+
+  # WorldGuard region-based rewards
+  worldguard:
+    enabled: false
+
+# Debug settings
+debug:
+  enabled: false
+  log-api-calls: false
