@@ -7,6 +7,13 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: write
+  statuses: write
+
 jobs:
   unit-tests:
     name: Unit Tests (Models & Utils)
@@ -80,6 +87,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [unit-tests, integration-tests]
     if: always()
+    permissions:
+      contents: read
+      actions: read
+      checks: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -97,6 +109,41 @@ jobs:
           path: integration-test-results/
         continue-on-error: true
 
+      - name: Analyze Test Results
+        id: test-analysis
+        run: |
+          echo "Analyzing test results..."
+
+          # Count unit test results
+          unit_test_count=0
+          if [ -d "unit-test-results" ]; then
+            unit_test_count=$(find unit-test-results -name "TEST-*.xml" | wc -l)
+          fi
+
+          # Count integration test results
+          integration_test_count=0
+          if [ -d "integration-test-results" ]; then
+            integration_test_count=$(find integration-test-results -name "TEST-*.xml" | wc -l)
+          fi
+
+          echo "unit_tests=$unit_test_count" >> $GITHUB_OUTPUT
+          echo "integration_tests=$integration_test_count" >> $GITHUB_OUTPUT
+
+          # Parse test results for failures
+          unit_failures=0
+          integration_failures=0
+
+          if [ -d "unit-test-results" ]; then
+            unit_failures=$(grep -r "failures=" unit-test-results/*.xml | grep -o 'failures="[0-9]*"' | cut -d'"' -f2 | awk '{sum+=$1} END {print sum+0}')
+          fi
+
+          if [ -d "integration-test-results" ]; then
+            integration_failures=$(grep -r "failures=" integration-test-results/*.xml | grep -o 'failures="[0-9]*"' | cut -d'"' -f2 | awk '{sum+=$1} END {print sum+0}')
+          fi
+
+          echo "unit_failures=$unit_failures" >> $GITHUB_OUTPUT
+          echo "integration_failures=$integration_failures" >> $GITHUB_OUTPUT
+
       - name: Publish Test Report
         uses: dorny/test-reporter@v1
         if: always()
@@ -105,49 +152,93 @@ jobs:
           path: "*/TEST-*.xml"
           reporter: java-junit
           fail-on-error: false
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Comment Test Summary
+      - name: Create Test Summary
+        if: always()
+        run: |
+          echo "## 🧪 Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.test-analysis.outputs.unit_tests }}" -gt "0" ]; then
+            if [ "${{ steps.test-analysis.outputs.unit_failures }}" -eq "0" ]; then
+              echo "✅ **Unit Tests**: ${{ steps.test-analysis.outputs.unit_tests }} test classes passed" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Unit Tests**: ${{ steps.test-analysis.outputs.unit_failures }} failures in ${{ steps.test-analysis.outputs.unit_tests }} test classes" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "❌ **Unit Tests**: No test results found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ steps.test-analysis.outputs.integration_tests }}" -gt "0" ]; then
+            if [ "${{ steps.test-analysis.outputs.integration_failures }}" -eq "0" ]; then
+              echo "✅ **Integration Tests**: ${{ steps.test-analysis.outputs.integration_tests }} test classes passed" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "⚠️ **Integration Tests**: ${{ steps.test-analysis.outputs.integration_failures }} failures in ${{ steps.test-analysis.outputs.integration_tests }} test classes (MockBukkit issues expected)" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "❌ **Integration Tests**: No test results found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "- **Models**: PlayerVoteDataTest, VoteRecordTest, RewardTest" >> $GITHUB_STEP_SUMMARY
+          echo "- **Utilities**: MessageUtilsSimpleTest" >> $GITHUB_STEP_SUMMARY
+          echo "- **Integration**: DatabaseManager, VoteManager, RewardManager, Commands" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "*Note: MockBukkit integration tests may fail due to initialization issues, but core model and utility tests provide comprehensive coverage.*" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment Test Summary on PR
         uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && always()
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const path = require('path');
 
             let summary = '## 🧪 Test Results Summary\n\n';
 
-            // Check unit tests
-            try {
-              const unitTestFiles = fs.readdirSync('unit-test-results/');
-              const unitTestCount = unitTestFiles.filter(f => f.startsWith('TEST-')).length;
-              summary += `✅ **Unit Tests**: ${unitTestCount} test classes ran successfully\n`;
-              summary += '- PlayerVoteDataTest ✅\n';
-              summary += '- VoteRecordTest ✅\n';
-              summary += '- RewardTest ✅\n';
-              summary += '- MessageUtilsSimpleTest ✅\n\n';
-            } catch (e) {
-              summary += '❌ **Unit Tests**: Failed to run\n\n';
+            const unitTests = '${{ steps.test-analysis.outputs.unit_tests }}';
+            const unitFailures = '${{ steps.test-analysis.outputs.unit_failures }}';
+            const integrationTests = '${{ steps.test-analysis.outputs.integration_tests }}';
+            const integrationFailures = '${{ steps.test-analysis.outputs.integration_failures }}';
+
+            // Unit test results
+            if (parseInt(unitTests) > 0) {
+              if (parseInt(unitFailures) === 0) {
+                summary += `✅ **Unit Tests**: ${unitTests} test classes passed\n`;
+                summary += '- PlayerVoteDataTest ✅\n';
+                summary += '- VoteRecordTest ✅\n';
+                summary += '- RewardTest ✅\n';
+                summary += '- MessageUtilsSimpleTest ✅\n\n';
+              } else {
+                summary += `❌ **Unit Tests**: ${unitFailures} failures in ${unitTests} test classes\n\n`;
+              }
+            } else {
+              summary += '❌ **Unit Tests**: No results found\n\n';
             }
 
-            // Check integration tests
-            try {
-              const integrationTestFiles = fs.readdirSync('integration-test-results/');
-              const integrationTestCount = integrationTestFiles.filter(f => f.startsWith('TEST-')).length;
-              if (integrationTestCount > 4) {
-                summary += `✅ **Integration Tests**: ${integrationTestCount} test classes completed\n`;
+            // Integration test results
+            if (parseInt(integrationTests) > 0) {
+              if (parseInt(integrationFailures) === 0) {
+                summary += `✅ **Integration Tests**: ${integrationTests} test classes passed\n`;
               } else {
-                summary += `⚠️ **Integration Tests**: ${integrationTestCount} test classes (MockBukkit issues expected)\n`;
+                summary += `⚠️ **Integration Tests**: ${integrationFailures} failures in ${integrationTests} test classes (MockBukkit issues expected)\n`;
               }
-            } catch (e) {
-              summary += '❌ **Integration Tests**: Failed to run\n';
+            } else {
+              summary += '❌ **Integration Tests**: No results found\n';
             }
 
             summary += '\n---\n';
             summary += '*Note: MockBukkit integration tests may fail due to initialization issues, but core model and utility tests provide comprehensive coverage.*';
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: summary
-            });
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: summary
+              });
+            } catch (error) {
+              console.log('Could not create PR comment:', error.message);
+            }
