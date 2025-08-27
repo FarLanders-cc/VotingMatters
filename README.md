@@ -1,5 +1,11 @@
 # VotingMatters - Minecraft Voting Plugin
 
+[![Build Status](https://github.com/clxrityy/VotingMatters/workflows/Build%20and%20Package/badge.svg)](https://github.com/clxrityy/VotingMatters/actions/workflows/build.yml)
+[![Tests](https://github.com/clxrityy/VotingMatters/workflows/Tests/badge.svg)](https://github.com/clxrityy/VotingMatters/actions/workflows/tests.yml)
+[![Java Version](https://img.shields.io/badge/Java-17%2B-orange)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.20%2B-green)](https://www.minecraft.net/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A comprehensive Spigot/Paper Minecraft plugin that allows players to vote for your server through various voting sites and receive flexible, customizable rewards.
 
 - [Features](#features)

@@ -1,0 +1,42 @@
+name: Workflow Validation
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+
+jobs:
+  validate-workflows:
+    name: Validate GitHub Actions Workflows
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate workflow syntax
+        run: |
+          # Check for basic YAML syntax
+          find .github/workflows -name "*.yml" -o -name "*.yaml" | while read file; do
+            echo "Validating $file"
+            python -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+          done
+
+      - name: Check for required fields
+        run: |
+          find .github/workflows -name "*.yml" -o -name "*.yaml" | while read file; do
+            echo "Checking required fields in $file"
+            grep -q "^name:" "$file" || (echo "Missing 'name' field in $file" && exit 1)
+            grep -q "^on:" "$file" || (echo "Missing 'on' field in $file" && exit 1)
+            grep -q "^jobs:" "$file" || (echo "Missing 'jobs' field in $file" && exit 1)
+          done
+
+      - name: Workflow summary
+        run: |
+          echo "## Workflow Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All workflow files have valid YAML syntax" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All required fields are present" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Workflow files found:" >> $GITHUB_STEP_SUMMARY
+          find .github/workflows -name "*.yml" -o -name "*.yaml" | while read file; do
+            echo "- $file" >> $GITHUB_STEP_SUMMARY
+          done
