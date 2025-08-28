@@ -34,16 +34,15 @@ commands:
 permissions:
   votingmatters.admin:
     description: Full admin access to voting plugin
-    default: op
+    default-permission: op
   votingmatters.check:
     description: Check other players' voting status
-    default: op
+    default-permission: op
   votingmatters.vote:
     description: Use voting commands
-    default: "not op"
+    default-permission: true
   votingmatters.notify:
     description: Receive vote notifications
-    default: "not op"
+    default-permission: true
 
-depend: [Vault]
-softdepend: [PlaceholderAPI, WorldGuard, Essentials]
+softdepend: [Vault, PlaceholderAPI, WorldGuard, Essentials]

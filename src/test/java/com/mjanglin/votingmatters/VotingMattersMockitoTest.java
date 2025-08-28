@@ -34,7 +34,7 @@ import com.mjanglin.votingmatters.managers.VoteManager;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("VotingMatters Plugin Tests (Mockito)")
-class VotingMattersMockitoTestFixed {
+class VotingMattersMockitoTest {
 
     @Mock
     private Server mockServer;
