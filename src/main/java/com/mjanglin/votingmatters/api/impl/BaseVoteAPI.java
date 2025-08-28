@@ -16,7 +16,7 @@ public abstract class BaseVoteAPI implements VoteAPI {
     protected final String siteName;
     protected long lastCheck = -1;
 
-    public BaseVoteAPI(VotingMatters plugin, String siteName) {
+    protected BaseVoteAPI(VotingMatters plugin, String siteName) {
         this.plugin = plugin;
         this.siteName = siteName;
     }

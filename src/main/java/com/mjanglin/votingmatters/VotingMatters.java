@@ -1,5 +1,7 @@
 package com.mjanglin.votingmatters;
 
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,7 +41,6 @@ public class VotingMatters extends JavaPlugin {
             getLogger().warning("Plugin instance already exists!");
         }
         instance = this;
-
         // Initialize managers
         this.configManager = new ConfigManager(this);
         this.databaseManager = new DatabaseManager(this);
@@ -77,17 +78,28 @@ public class VotingMatters extends JavaPlugin {
         if (databaseManager != null) {
             databaseManager.close();
         }
-        instance = null;
         getLogger().info("VotingMatters has been disabled!");
     }
 
     private void registerCommands() {
-        getCommand("vote").setExecutor(new VoteCommand(this));
-        getCommand("votereward").setExecutor(new VoteRewardCommand());
-        getCommand("votecheck").setExecutor(new VoteCheckCommand(this));
-        getCommand("votestats").setExecutor(new VoteStatsCommand(this));
-        getCommand("votereload").setExecutor(new VoteReloadCommand(this));
-        getCommand("votetop").setExecutor(new VoteTopCommand(this));
+        if (getCommand("vote") != null) {
+            getCommand("vote").setExecutor(new VoteCommand(this));
+        }
+        if (getCommand("votereward") != null) {
+            getCommand("votereward").setExecutor(new VoteRewardCommand());
+        }
+        if (getCommand("votecheck") != null) {
+            getCommand("votecheck").setExecutor(new VoteCheckCommand(this));
+        }
+        if (getCommand("votestats") != null) {
+            getCommand("votestats").setExecutor(new VoteStatsCommand(this));
+        }
+        if (getCommand("votereload") != null) {
+            getCommand("votereload").setExecutor(new VoteReloadCommand(this));
+        }
+        if (getCommand("votetop") != null) {
+            getCommand("votetop").setExecutor(new VoteTopCommand(this));
+        }
     }
 
     private void registerListeners() {
@@ -112,7 +124,7 @@ public class VotingMatters extends JavaPlugin {
             configManager.reload();
             getLogger().info("Configuration reloaded successfully!");
         } catch (Exception e) {
-            getLogger().severe("Error reloading configuration: " + e.getMessage());
+            getLogger().log(Level.SEVERE, "Error reloading configuration: {0}", e.getMessage());
         }
     }
     // Getters

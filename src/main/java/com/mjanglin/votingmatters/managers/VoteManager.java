@@ -159,37 +159,36 @@ public class VoteManager {
         return plugin.getDatabaseManager().hasVotedOnSite(playerUuid, siteName, 24)
                 .exceptionally(throwable -> {
                     plugin.getLogger()
-                            .warning("Failed to check if player has voted recently: " + throwable.getMessage());
+                            .log(Level.WARNING, "Failed to check if player has voted recently: {0}",
+                                    throwable.getMessage());
                     return false;
                 });
     }
 
     public CompletableFuture<Void> processOfflineVotes(Player player) {
-        return CompletableFuture.runAsync(() -> {
-            plugin.getDatabaseManager().getUnrewardedVotes(player.getUniqueId())
-                    .thenAccept(unrewardedVotes -> {
-                        if (!unrewardedVotes.isEmpty()) {
-                            // Get player data
-                            plugin.getDatabaseManager().getPlayerData(player.getUniqueId())
-                                    .thenAccept(playerData -> {
-                                        if (playerData != null) {
-                                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                                // Give rewards for each unrewarded vote
-                                                for (VoteRecord vote : unrewardedVotes) {
-                                                    plugin.getRewardManager().giveVoteRewards(player,
-                                                            vote.getSiteName(), playerData);
-                                                    plugin.getDatabaseManager().markVoteRewarded(vote.getId());
-                                                }
+        return CompletableFuture.runAsync(() -> plugin.getDatabaseManager().getUnrewardedVotes(player.getUniqueId())
+                .thenAccept(unrewardedVotes -> {
+                    if (!unrewardedVotes.isEmpty()) {
+                        // Get player data
+                        plugin.getDatabaseManager().getPlayerData(player.getUniqueId())
+                                .thenAccept(playerData -> {
+                                    if (playerData != null) {
+                                        Bukkit.getScheduler().runTask(plugin, () -> {
+                                            // Give rewards for each unrewarded vote
+                                            for (VoteRecord vote : unrewardedVotes) {
+                                                plugin.getRewardManager().giveVoteRewards(player,
+                                                        vote.getSiteName(), playerData);
+                                                plugin.getDatabaseManager().markVoteRewarded(vote.getId());
+                                            }
 
-                                                // Clear offline votes
-                                                playerData.clearOfflineVotes();
-                                                plugin.getDatabaseManager().savePlayerData(playerData);
-                                            });
-                                        }
-                                    });
-                        }
-                    });
-        });
+                                            // Clear offline votes
+                                            playerData.clearOfflineVotes();
+                                            plugin.getDatabaseManager().savePlayerData(playerData);
+                                        });
+                                    }
+                                });
+                    }
+                }));
     }
 
     public Map<String, String> getVotingSites() {

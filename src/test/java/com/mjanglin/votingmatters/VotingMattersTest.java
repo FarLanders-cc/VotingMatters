@@ -20,13 +20,35 @@ class VotingMattersTest {
 
     @BeforeEach
     void setUp() {
-        server = MockBukkit.mock();
-        plugin = MockBukkit.load(VotingMatters.class);
+        try {
+            // Set system properties to help with MockBukkit initialization
+            System.setProperty("MockBukkit.enableStackTraces", "true");
+
+            // Initialize MockBukkit with more robust setup
+            server = MockBukkit.mock();
+
+            // Load the plugin with error handling
+            plugin = MockBukkit.load(VotingMatters.class);
+
+        } catch (Exception e) {
+            // If MockBukkit fails, clean up and rethrow
+            try {
+                MockBukkit.unmock();
+            } catch (Exception ignored) {
+                // Ignore cleanup errors
+            }
+            throw new RuntimeException("Failed to initialize MockBukkit: " + e.getMessage(), e);
+        }
     }
 
     @AfterEach
     void tearDown() {
-        MockBukkit.unmock();
+        try {
+            MockBukkit.unmock();
+        } catch (Exception e) {
+            // Log but don't fail the test on cleanup errors
+            System.err.println("Warning: Error during MockBukkit cleanup: " + e.getMessage());
+        }
     }
 
     @Test

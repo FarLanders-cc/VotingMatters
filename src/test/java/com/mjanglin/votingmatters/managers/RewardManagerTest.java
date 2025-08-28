@@ -24,18 +24,42 @@ class RewardManagerTest {
 
     @BeforeEach
     void setUp() {
-        MockBukkit.mock();
-        plugin = MockBukkit.load(VotingMatters.class);
+        try {
+            // Set system properties to help with MockBukkit initialization
+            System.setProperty("MockBukkit.enableStackTraces", "true");
 
-        rewardManager = plugin.getRewardManager();
-        assertNotNull(rewardManager, "RewardManager should be initialized");
+            MockBukkit.mock();
+            plugin = MockBukkit.load(VotingMatters.class);
 
-        player = MockBukkit.getMock().addPlayer("TestPlayer");
+            rewardManager = plugin.getRewardManager();
+            assertNotNull(rewardManager, "RewardManager should be initialized");
+
+            var mockServer = MockBukkit.getMock();
+            if (mockServer != null) {
+                player = mockServer.addPlayer("TestPlayer");
+                assertNotNull(player, "Player should be created successfully");
+            } else {
+                throw new RuntimeException("MockBukkit server is null");
+            }
+        } catch (Exception e) {
+            // If MockBukkit fails, clean up and rethrow
+            try {
+                MockBukkit.unmock();
+            } catch (Exception ignored) {
+                // Ignore cleanup errors
+            }
+            throw new RuntimeException("Failed to initialize MockBukkit for RewardManagerTest: " + e.getMessage(), e);
+        }
     }
 
     @AfterEach
     void tearDown() {
-        MockBukkit.unmock();
+        try {
+            MockBukkit.unmock();
+        } catch (Exception e) {
+            // Log but don't fail the test on cleanup errors
+            System.err.println("Warning: Error during MockBukkit cleanup in RewardManagerTest: " + e.getMessage());
+        }
     }
 
     @Test
