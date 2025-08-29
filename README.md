@@ -188,7 +188,7 @@ The plugin creates three main tables:
 ### Building
 
 ```bash
-git clone https://github.com/clxrityy/VotingMatters.git
+git clone https://github.com/farlanders-cc/VotingMatters.git
 cd VotingMatters
 mvn clean package
 ```
